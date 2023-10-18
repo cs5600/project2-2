@@ -6,7 +6,9 @@
 /* NO OTHER INCLUDE FILES */
 #include "elf64.h"
 #include "sysdefs.h"
-#include <sys/mman.h>
+#include <stdlib.h>
+
+// #include <sys/mman.h>
 
 
 extern void *vector[];
@@ -114,53 +116,6 @@ int split(char **argv, int max_argc, char *line)
 	return i;
 }
 
-/* ---------- */
-
-/* This is where you write the details of the function exec(char* filename) called by main()
-* Follow instructions listed in project description.
-* the guts of part 2
-*   read the ELF header
-*   for each segment, if b_type == PT_LOAD:
-*     create mmap region
-*     read from file into region
-*   function call to hdr.e_entry
-*   munmap each mmap'ed region so we don't crash the 2nd time
-*
-*   don't forget to define offset, and add it to virtual addresses read from ELF file
-*
-*               your code here
-*/
-
-
-
-/* ---------- */
-void main(void)
-{   // The vector array is defined as a global array. It plays the role of a system call vector table 
-	// (similar to the interrupt vector table seen in class). Each entry in this array/table holds the address
-	// of the corresponding system function. Check out call-vector.S and Makefile to see how the vector table is built.
-	
-	vector[0] = do_readline;
-	vector[1] = do_print;
-	vector[2] = do_getarg;
-
-	char buffer[200];
-	while (1) {
-		do_print("Please enter the name of the executable file to run: ");
-		do_readline(buffer, 200);
-		if (buffer[0] == 'q') {
-			break;
-		} else {
-			exec(buffer);
-		}
-	}
-
-	exit(0);
-
-	/* YOUR CODE HERE AS DESCRIBED IN THE FILE DESCRIPTION*/
-	/* When the user enters an executable_file, the main function should call exec(executable_file) */
-}
-
-
 void exec(char* filename) {
     int fd = open(filename, 0);
     struct elf64_ehdr e_hdr;
@@ -218,3 +173,52 @@ void exec(char* filename) {
     // Free dynamically allocated memory
     free(phdrs);
 }
+
+/* ---------- */
+
+/* This is where you write the details of the function exec(char* filename) called by main()
+* Follow instructions listed in project description.
+* the guts of part 2
+*   read the ELF header
+*   for each segment, if b_type == PT_LOAD:
+*     create mmap region
+*     read from file into region
+*   function call to hdr.e_entry
+*   munmap each mmap'ed region so we don't crash the 2nd time
+*
+*   don't forget to define offset, and add it to virtual addresses read from ELF file
+*
+*               your code here
+*/
+
+
+
+/* ---------- */
+void main(void)
+{   // The vector array is defined as a global array. It plays the role of a system call vector table 
+	// (similar to the interrupt vector table seen in class). Each entry in this array/table holds the address
+	// of the corresponding system function. Check out call-vector.S and Makefile to see how the vector table is built.
+	
+	vector[0] = do_readline;
+	vector[1] = do_print;
+	vector[2] = do_getarg;
+
+	char buffer[200];
+	while (1) {
+		do_print("Please enter the name of the executable file to run: ");
+		do_readline(buffer, 200);
+		if (buffer[0] == 'q') {
+			break;
+		} else {
+			exec(buffer);
+		}
+	}
+
+	exit(0);
+
+	/* YOUR CODE HERE AS DESCRIBED IN THE FILE DESCRIPTION*/
+	/* When the user enters an executable_file, the main function should call exec(executable_file) */
+}
+
+
+

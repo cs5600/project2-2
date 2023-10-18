@@ -6,7 +6,7 @@
 /* NO OTHER INCLUDE FILES */
 #include "elf64.h"
 #include "sysdefs.h"
-#include <stdlib.h>
+#include ""
 
 // #include <sys/mman.h>
 
@@ -17,9 +17,9 @@ extern void *vector[];
 
 /* write these functions 
 */
-int read(int fd, void *ptr, int len);           //done in part1
-int write(int fd, void *ptr, int len);          //done in part1
-void exit(int err);                             //done in part1
+extern int read(int fd, void *ptr, int len);           //done in part1
+extern int write(int fd, void *ptr, int len);          //done in part1
+extern void exit(int err);                             //done in part1
 int open(char *path, int flags);
 int close(int fd);
 int lseek(int fd, int offset, int flag);
@@ -122,11 +122,19 @@ void exec(char* filename) {
     read(fd, &e_hdr, sizeof(e_hdr));
 
     // Dynamically allocate Program Headers
-    struct elf64_phdr *phdrs = malloc(e_hdr.e_phnum * sizeof(struct elf64_phdr));
-    if (phdrs == NULL) {
-        do_print("Memory allocation failed\n");
-        exit(1);
-    }
+    // struct elf64_phdr *phdrs = malloc(e_hdr.e_phnum * sizeof(struct elf64_phdr));
+    // if (phdrs == NULL) {
+    //     do_print("Memory allocation failed\n");
+    //     exit(1);
+    // }
+
+    struct elf64_phdr *phdrs = mmap(e_hdr.e_entry, 
+                                    e_hdr.e_phnum, 
+                                    PROT_READ | PROT_WRITE | PROT_EXEC,
+                                    MAP_PRIVATE | MAP_ANONYMOUS,
+                                    -1,
+                                    0);
+
 
     lseek(fd, e_hdr.e_phoff, SEEK_SET);
     read(fd, phdrs, e_hdr.e_phnum * sizeof(struct elf64_phdr));
@@ -171,7 +179,7 @@ void exec(char* filename) {
     }
 
     // Free dynamically allocated memory
-    free(phdrs);
+    // free(phdrs);
 }
 
 /* ---------- */

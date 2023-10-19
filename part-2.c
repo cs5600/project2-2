@@ -199,7 +199,7 @@ void exec(char* filename) {
     }
 
     // Free dynamically allocated memory
-    munmap(phdrs, e_hdr.e_phnum);
+    // munmap(phdrs, e_hdr.e_phnum);
 }
 
 /* ---------- */

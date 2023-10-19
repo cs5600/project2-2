@@ -141,17 +141,19 @@ void exec(char* filename) {
     struct elf64_ehdr e_hdr;
     read(fd, &e_hdr, sizeof(e_hdr));
 
+    struct elf64_phdr phdrs[e_hdr.e_phnum]
+
     // Dynamically allocate Program Headers
-    struct elf64_phdr *phdrs = mmap(e_hdr.e_entry, 
-                                    e_hdr.e_phnum, 
-                                    PROT_READ | PROT_WRITE | PROT_EXEC,
-                                    MAP_PRIVATE | MAP_ANONYMOUS,
-                                    -1,
-                                    0);
-    if (phdrs == NULL) {
-        do_print("Memory allocation failed\n");
-        exit(1);
-    }
+    // struct elf64_phdr *phdrs = mmap(e_hdr.e_entry, 
+    //                                 e_hdr.e_phnum, 
+    //                                 PROT_READ | PROT_WRITE | PROT_EXEC,
+    //                                 MAP_PRIVATE | MAP_ANONYMOUS,
+    //                                 -1,
+    //                                 0);
+    // if (phdrs == NULL) {
+    //     do_print("Memory allocation failed\n");
+    //     exit(1);
+    // }
 
 
     lseek(fd, e_hdr.e_phoff, SEEK_SET);

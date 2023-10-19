@@ -6,15 +6,8 @@
 /* NO OTHER INCLUDE FILES */
 #include "elf64.h"
 #include "sysdefs.h"
-#include "part-1.c"
-
-// #include <sys/mman.h>
-
 
 extern void *vector[];
-extern int read(int fd, void *ptr, int len);
-extern int write(int fd, void *ptr, int len); 
-extern void exit(int err);    
 
 /* ---------- */
 
@@ -29,6 +22,27 @@ int lseek(int fd, int offset, int flag);
 void *mmap(void *addr, int len, int prot, int flags, int fd, int offset);
 int munmap(void *addr, int len);
 
+int read(int fd, void *ptr, int len) {
+	if (len < 0) {
+		return -1;
+	}
+
+	return syscall(__NR_read, fd, ptr, len);
+} 
+
+int write(int fd, void *ptr, int len){
+	/* add your code here*/
+	if (len < 0) {
+		return -1;
+	}
+
+	return syscall(__NR_write, fd, ptr, len);
+}
+
+void exit(int err){
+	/* add your code here*/
+	syscall(__NR_exit, err);
+}
 
 /* ---------- */
 
@@ -121,9 +135,9 @@ int split(char **argv, int max_argc, char *line)
 }
 
 void exec(char* filename) {
-    global_argc = split(global_argv, 10, filename)
+    global_argc = split(global_argv, 10, filename);
     int fd = open(global_argv[0], 0);
-    
+
     struct elf64_ehdr e_hdr;
     read(fd, &e_hdr, sizeof(e_hdr));
 

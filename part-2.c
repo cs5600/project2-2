@@ -141,7 +141,7 @@ void exec(char* filename) {
     struct elf64_ehdr e_hdr;
     read(fd, &e_hdr, sizeof(e_hdr));
 
-    struct elf64_phdr phdrs[e_hdr.e_phnum]
+    struct elf64_phdr phdrs[e_hdr.e_phnum];
 
     // Dynamically allocate Program Headers
     // struct elf64_phdr *phdrs = mmap(e_hdr.e_entry, 

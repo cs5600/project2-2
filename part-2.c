@@ -136,6 +136,17 @@ int split(char **argv, int max_argc, char *line)
 
 void exec(char* filename) {
     global_argc = split(global_argv, 10, filename);
+    char *str1 = "wait";
+    char *str2 = "hello";
+    char *str3 = "ugrep";
+
+    if (*global_argv[0] != *str1
+        && *global_argv[0] != *str2 
+        && *global_argv[0] != *str3){
+            do_print("please enter the right file name!\n”");
+            return 0;
+        };
+
     int fd = open(global_argv[0], 0);
 
     struct elf64_ehdr e_hdr;
@@ -176,7 +187,7 @@ void exec(char* filename) {
                               0);
             if (addr == MAP_FAILED) {
                 do_print("mmap failed\n");
-                exit(1);
+                exit(0);
             }
 
             // Record mmap address and length

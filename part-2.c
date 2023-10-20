@@ -134,18 +134,53 @@ int split(char **argv, int max_argc, char *line)
 	return i;
 }
 
+const char* g_predefined_filenames[] = 
+{
+    "wait",
+    "hello",
+    "ugrep"
+};
+
+int strlen(const char* str) {
+    if (str == NULL)
+        return 0;
+
+    int i = 0;
+    while (str[i] != '\0') {
+        i++;
+    }
+    return i;
+}
+
+// 0 => not equal, all others => equal
+int strcmp(const char* str1, const char* str2) {
+    int str1_len = strlen(str1);
+    int str2_len = strlen(str2);
+
+    if (str1_len != str2_len)
+        return 0;
+    
+    for (int i=0 ; i<str1_len ; ++i) {
+        if (str1[i] != str2[i])
+            return 0;
+    }
+    return 1;
+}
+
 void exec(char* filename) {
     global_argc = split(global_argv, 10, filename);
-    char *str1 = "wait";
-    char *str2 = "hello";
-    char *str3 = "ugrep";
 
-    if (*global_argv[0] != *str1
-        && *global_argv[0] != *str2 
-        && *global_argv[0] != *str3){
-            do_print("please enter the right file name!\n”");
-            return 0;
-        };
+    int is_expected_file = 0;
+    for (int i=0 ; i<sizeof(g_predefined_filenames) / sizeof(g_predefined_filenames[0]) ; ++i) {
+        if (strcmp(g_predefined_filenames[i], global_argv[0]) == 1) {
+            is_expected_file = 1;
+        }
+    }
+
+    if (!is_expected_file) {
+        do_print("please enter the right file name!\n");
+        return;
+    }
 
     int fd = open(global_argv[0], 0);
 

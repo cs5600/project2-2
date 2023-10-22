@@ -6,4 +6,4 @@ GroupMember:
     Jiaming Zhou
 
 #Modification
-Finish read, write, exit, readline, print_and_clean functions and main in part-1.c
+building system functions, reading an ELF executable, requesting an appropriate size in memory, loading an executable into this allocated space and executing it
